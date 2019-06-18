@@ -24,11 +24,8 @@ function cleanCSS(css) {
 }
 
 function injectAttributeSelector(selector, attributeName) {
-    let index = 0;
-    let hasWhitespace = false;
-    let hasInsertedAttribute = false;
-    let hasDeepCombinator = false;
     const attribute = '[' + attributeName + ']';
+    let index = 0, hasWhitespace = false, hasInsertedAttribute = false, hasDeepCombinator = false;
 
     function incrementIndex(size) {
         index += size;
@@ -77,16 +74,13 @@ function injectAttributeSelector(selector, attributeName) {
             } else {
                 incrementIndex(1);
             }
-            hasInsertedAttribute = false;
-            hasWhitespace = false;
+            hasInsertedAttribute = hasWhitespace = false;
             skipWhitespace();
         } else if (char === ',') {
             if (shouldInsertAttribute()) {
                 insertAttributeAt(index);
             }
-            hasInsertedAttribute = false;
-            hasDeepCombinator = false;
-            hasWhitespace = false;
+            hasInsertedAttribute = hasDeepCombinator = hasWhitespace = false;
             skipWhitespace();
         } else {
             if (hasWhitespace) {
