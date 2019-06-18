@@ -74,8 +74,9 @@ function injectAttributeSelector(selector, attributeName) {
             if (selector.substring(index, index + 3) === '>>>') {
                 selector = selector.slice(0, (hasWhitespace ? index - 1 : index)) + (hasWhitespace ? '' : ' ') + selector.slice(index + 3);
                 hasDeepCombinator = true;
+            } else {
+                incrementIndex(1);
             }
-            incrementIndex(1);
             hasInsertedAttribute = false;
             hasWhitespace = false;
             skipWhitespace();

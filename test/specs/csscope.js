@@ -277,6 +277,30 @@ describe('csscope', () => {
         `);
     });
 
+    it('should transform selector groups', () => {
+        expectCSS(`
+            div, span, em{
+                color:red;
+            }
+        `, `
+            div[data-css-foo], span[data-css-foo], em[data-css-foo]{
+                color:red;
+            }
+        `);
+    });
+
+    it('should transform selector groups with no whitespace', () => {
+        expectCSS(`
+            div,span,em{
+                color:red;
+            }
+        `, `
+            div[data-css-foo],span[data-css-foo],em[data-css-foo]{
+                color:red;
+            }
+        `);
+    });
+
     it('should transform a descendant combinator', () => {
         expectCSS(`
             div span em{
@@ -365,6 +389,16 @@ describe('csscope', () => {
                 color:red;
             }
         `);
+
+        expectCSS(`
+            div >>> em, a >>> i, strong >>> p{
+                color:red;
+            }
+        `, `
+            div[data-css-foo] em, a[data-css-foo] i, strong[data-css-foo] p{
+                color:red;
+            }
+        `);
     });
 
     it('should transform combinators with no whitespace', () => {
@@ -374,30 +408,6 @@ describe('csscope', () => {
             }
         `, `
             div[data-css-foo] span[data-css-foo]>em[data-css-foo]+strong[data-css-foo]~i[data-css-foo] p{
-                color:red;
-            }
-        `);
-    });
-
-    it('should transform selector groups', () => {
-        expectCSS(`
-            div, span, em{
-                color:red;
-            }
-        `, `
-            div[data-css-foo], span[data-css-foo], em[data-css-foo]{
-                color:red;
-            }
-        `);
-    });
-
-    it('should transform selector groups with no whitespace', () => {
-        expectCSS(`
-            div,span,em{
-                color:red;
-            }
-        `, `
-            div[data-css-foo],span[data-css-foo],em[data-css-foo]{
                 color:red;
             }
         `);
