@@ -27,6 +27,7 @@ function injectAttributeSelector(selector, attributeName) {
     let index = 0;
     let hasWhitespace = false;
     let hasInsertedAttribute = false;
+    let hasDeepCombinator = false;
     const attribute = '[' + attributeName + ']';
 
     function incrementIndex(size) {
@@ -53,33 +54,42 @@ function injectAttributeSelector(selector, attributeName) {
         return c === ' ' || c === '\n' || c === '\t' || c === '\f' || c === '\r';
     }
 
+    function shouldInsertAttribute() {
+        return !hasInsertedAttribute && !hasDeepCombinator;
+    }
+
     while (index < selector.length) {
         const char = selector.charAt(index);
         if (isWhitespace(char)) {
             hasWhitespace = true;
             skipWhitespace();
         } else if (char === '>' || char === '~' || char === '+') {
-            if (!hasInsertedAttribute) {
+            if (shouldInsertAttribute()) {
                 if (hasWhitespace) {
                     insertAttributeAt(index - 1);
                 } else {
                     insertAttributeAt(index);
                 }
             }
+            if (selector.substring(index, index + 3) === '>>>') {
+                selector = selector.slice(0, (hasWhitespace ? index - 1 : index)) + (hasWhitespace ? '' : ' ') + selector.slice(index + 3);
+                hasDeepCombinator = true;
+            }
             incrementIndex(1);
             hasInsertedAttribute = false;
             hasWhitespace = false;
             skipWhitespace();
         } else if (char === ',') {
-            if (!hasInsertedAttribute) {
+            if (shouldInsertAttribute()) {
                 insertAttributeAt(index);
             }
             hasInsertedAttribute = false;
+            hasDeepCombinator = false;
             hasWhitespace = false;
             skipWhitespace();
         } else {
             if (hasWhitespace) {
-                if (!hasInsertedAttribute) {
+                if (shouldInsertAttribute()) {
                     insertAttributeAt(index - 1);
                 }
                 hasWhitespace = false;
@@ -93,13 +103,13 @@ function injectAttributeSelector(selector, attributeName) {
                 incrementIndex(1);
                 skipPattern(nameRe);
             } else if (char === '[') {
-                if (!hasInsertedAttribute) {
+                if (shouldInsertAttribute()) {
                     insertAttributeAt(index);
                     hasInsertedAttribute = true;
                 }
                 skipPattern(atttributeRe);
             } else if (char === ':') {
-                if (!hasInsertedAttribute) {
+                if (shouldInsertAttribute()) {
                     insertAttributeAt(index);
                     hasInsertedAttribute = true;
                 }
@@ -114,7 +124,7 @@ function injectAttributeSelector(selector, attributeName) {
             }
         }
     }
-    if (!hasInsertedAttribute) {
+    if (shouldInsertAttribute()) {
         selector += attribute;
     }
     return selector;
