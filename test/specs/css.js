@@ -1,16 +1,68 @@
 import expectCSS from '../setup';
 
 describe('css', () => {
-    it('should transform multiple blocks', () => {
-        expectCSS(`
+    it('should transform different block formats', () => {
+        expectCSS('data-css-foo', `
             div{
                 color:red;
             }
-            span{
-                color:blue;
+        `, `
+            div[data-css-foo]{
+                color:red;
             }
-            em{
-                color:green;
+        `);
+
+        expectCSS('data-css-foo', `
+            div  {
+                color:   red;
+            }
+        `, `
+            div[data-css-foo]{
+                color:red;
+            }
+        `);
+
+        expectCSS('data-css-foo', `
+            div { color:red; }
+        `, `
+            div[data-css-foo]{
+                color:red;
+            }
+        `);
+
+        expectCSS('data-css-foo', `
+            div
+            {
+                color: red;
+            }
+        `, `
+            div[data-css-foo]{
+                color:red;
+            }
+        `);
+
+        expectCSS('data-css-foo', `
+            div,
+            span {
+                color: red;
+            }
+        `, `
+            div[data-css-foo], span[data-css-foo]{
+                color:red;
+            }
+        `);
+    });
+
+    it('should transform multiple blocks', () => {
+        expectCSS('data-css-foo', `
+            div {
+                color: red;
+            }
+            span {
+                color: blue;
+            }
+            em {
+                color: green;
             }
         `, `
             div[data-css-foo]{
@@ -26,12 +78,13 @@ describe('css', () => {
     });
 
     it('should remove comments', () => {
-        expectCSS(`
+        expectCSS('data-css-foo', `
             /**
-             * foo
+             * Donec convallis dictum felis eget ultricies. Quisque at nulla lacinia, bibendum diam. 
+             * Quisque non enim pretium, interdum nisl quis, lacinia libero. In eu odio.
              */
-            div{
-                color:red; /* bar */
+            div {
+                color: red; /* foo */
             }
         `, `
             div[data-css-foo]{
@@ -41,18 +94,22 @@ describe('css', () => {
     });
 
     it('should not transform properties', () => {
-        expectCSS(`
-            div{
-                color:rgba(255,0,0,.5);
-                transition:color .3s linear 1s, background .2s ease-in 1s, opacity .3s;
-                background-image:url("foo.jpg"), url("bar.jpg"), url("baz.jpg");
-                font-family:Times, "Times New Roman", serif;
-                width:calc(30% * 20em - 2vh / 2pt);
-                box-shadow:inset 0 0 10px rgba(0,0,0,.5) !important;
-                transform:rotate(-45deg) skew(20deg, 40deg) scale(2);
+        expectCSS('data-css-foo', `
+            div {
+                --main-bg-color: brown;
+                background-color: var(--main-bg-color, hsla(30, 100%, 50%, .3));
+                color: rgba(255,0,0,.5);
+                transition: color .3s linear 1s, background .2s ease-in 1s, opacity .3s;
+                background-image: url("foo.jpg"), url("bar.jpg"), url("baz.jpg");
+                font-family: Times, "Times New Roman", serif;
+                width: calc(30% * 20em - 2vh / 2pt);
+                box-shadow: inset 0 0 10px rgba(0,0,0,.5) !important;
+                transform: rotate(-45deg) skew(20deg, 40deg) scale(2);
             }
         `, `
             div[data-css-foo]{
+                --main-bg-color:brown;
+                background-color:var(--main-bg-color, hsla(30, 100%, 50%, .3));
                 color:rgba(255,0,0,.5);
                 transition:color .3s linear 1s, background .2s ease-in 1s, opacity .3s;
                 background-image:url("foo.jpg"), url("bar.jpg"), url("baz.jpg");
@@ -65,7 +122,7 @@ describe('css', () => {
     });
 
     it('should transform a stylesheet', () => {
-        expectCSS(`
+        expectCSS('data-css-foo', `
             /**
              * Proin ut iaculis eros, sed viverra leo. Maecenas et consequat dui. Nunc. 
              */

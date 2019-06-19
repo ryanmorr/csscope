@@ -8,6 +8,6 @@ function normalizeWhitespace(str) {
         .replace(/\s{2,}/g, ' ');
 }
 
-export default function expectCSS(css, expected) {
-    expect(normalizeWhitespace(csscope('data-css-foo', css))).to.equal(normalizeWhitespace(expected));
+export default function expectCSS(attr, css, expected) {
+    expect(normalizeWhitespace(csscope(attr, css))).to.equal(normalizeWhitespace(expected));
 }

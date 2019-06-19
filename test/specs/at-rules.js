@@ -2,10 +2,10 @@ import expectCSS from '../setup';
 
 describe('at-rules', () => {
     it('should transform a media query at-rule with no conditions', () => {
-        expectCSS(`
-            @media print{
-                div{
-                    color:red;
+        expectCSS('data-css-foo', `
+            @media print {
+                div {
+                    color: red;
                 }
             }
         `, `
@@ -16,10 +16,10 @@ describe('at-rules', () => {
             }
         `);
 
-        expectCSS(`
-            @media screen, print{
-                div{
-                    color:red;
+        expectCSS('data-css-foo', `
+            @media screen, print {
+                div {
+                    color: red;
                 }
             }
         `, `
@@ -32,10 +32,10 @@ describe('at-rules', () => {
     });
 
     it('should transform a media query at-rule with conditions', () => {
-        expectCSS(`
-            @media screen and (max-width: 480px){
-                div{
-                    color:red;
+        expectCSS('data-css-foo', `
+            @media screen and (max-width: 480px) {
+                div {
+                    color: red;
                 }
             }
         `, `
@@ -46,13 +46,13 @@ describe('at-rules', () => {
             }
         `);
 
-        expectCSS(`
+        expectCSS('data-css-foo', `
             @media only screen 
               and (min-width: 320px) 
               and (max-width: 480px)
-              and (resolution: 150dpi){
-                div{
-                    color:red;
+              and (resolution: 150dpi) {
+                div {
+                    color: red;
                 }
             }
         `, `
@@ -65,8 +65,8 @@ describe('at-rules', () => {
     });
 
     it('should not transform an @font-face at-rule', () => {
-        expectCSS(`
-            @font-face{
+        expectCSS('data-css-foo', `
+            @font-face {
                 font-family: "Open Sans";
                 src: url("/fonts/OpenSans-Regular-webfont.woff2") format("woff2"),
                      url("/fonts/OpenSans-Regular-webfont.woff") format("woff");
@@ -80,7 +80,7 @@ describe('at-rules', () => {
     });
 
     it('should not transform an @keyframes at-rule', () => {
-        expectCSS(`
+        expectCSS('data-css-foo', `
             @keyframes foo {
                 from {
                     margin-left: 100%;
@@ -105,7 +105,7 @@ describe('at-rules', () => {
             }
         `);
 
-        expectCSS(`
+        expectCSS('data-css-foo', `
             @keyframes foo {
                 0% {
                     top: 0;
@@ -143,10 +143,10 @@ describe('at-rules', () => {
     });
 
     it('should transform an @supports at-rule', () => {
-        expectCSS(`
+        expectCSS('data-css-foo', `
             @supports (display: grid) {
-                div{
-                    color:red;
+                div {
+                    color: red;
                 }
             }
         `, `
@@ -159,10 +159,10 @@ describe('at-rules', () => {
     });
 
     it('should transform an @supports at-rule with an operator', () => {
-        expectCSS(`
+        expectCSS('data-css-foo', `
             @supports not (transform-origin: 10em 10em 10em) {
-                div{
-                    color:red;
+                div {
+                    color: red;
                 }
             }
         `, `
@@ -173,10 +173,10 @@ describe('at-rules', () => {
             }
         `);
 
-        expectCSS(`
+        expectCSS('data-css-foo', `
             @supports (display: table-cell) and (display: list-item) {
-                div{
-                    color:red;
+                div {
+                    color: red;
                 }
             }
         `, `
@@ -187,11 +187,11 @@ describe('at-rules', () => {
             }
         `);
 
-        expectCSS(`
+        expectCSS('data-css-foo', `
             @supports (transform-style: preserve-3d) or ((-moz-transform-style: preserve-3d) or
                 ((-o-transform-style: preserve-3d) or (-webkit-transform-style: preserve-3d))){
-                div{
-                    color:red;
+                div {
+                    color: red;
                 }
             }
         `, `
@@ -202,10 +202,10 @@ describe('at-rules', () => {
             }
         `);
 
-        expectCSS(`
+        expectCSS('data-css-foo', `
             @supports (display: grid) and (not (display: inline-grid)) {
-                div{
-                    color:red;
+                div {
+                    color: red;
                 }
             }
         `, `
@@ -218,7 +218,7 @@ describe('at-rules', () => {
     });
 
     it('should transform nested at-rules', () => {
-        expectCSS(`
+        expectCSS('data-css-foo', `
             @supports (animation-name: foo) {
                 @keyframes bar {
                     from {
@@ -238,16 +238,16 @@ describe('at-rules', () => {
                 }
 
                 @media screen and (max-width: 480px) {
-                    div{
-                        color:red;
+                    div {
+                        color: red;
                     }
 
-                    @keyframes baz{
-                        from{
-                            height:0;
+                    @keyframes baz {
+                        from {
+                            height: 0;
                         }
-                        to{
-                            height:100px;
+                        to {
+                            height: 100px;
                         }
                     }
                 }

@@ -2,9 +2,9 @@ import expectCSS from '../setup';
 
 describe('simple selectors', () => {
     it('should transform the universal selector', () => {
-        expectCSS(`
-            *{
-                color:red;
+        expectCSS('data-css-foo', `
+            * {
+                color: red;
             }
         `, `
             *[data-css-foo]{
@@ -14,9 +14,9 @@ describe('simple selectors', () => {
     });
 
     it('should transform a tag selector', () => {
-        expectCSS(`
-            div{
-                color:red;
+        expectCSS('data-css-foo', `
+            div {
+                color: red;
             }
         `, `
             div[data-css-foo]{
@@ -26,9 +26,9 @@ describe('simple selectors', () => {
     });
 
     it('should transform an ID selector', () => {
-        expectCSS(`
-            #foo{
-                color:red;
+        expectCSS('data-css-foo', `
+            #foo {
+                color: red;
             }
         `, `
             #foo[data-css-foo]{
@@ -38,9 +38,9 @@ describe('simple selectors', () => {
     });
 
     it('should transform a class selector', () => {
-        expectCSS(`
-            .foo{
-                color:red;
+        expectCSS('data-css-foo', `
+            .foo {
+                color: red;
             }
         `, `
             .foo[data-css-foo]{
@@ -50,9 +50,9 @@ describe('simple selectors', () => {
     });
 
     it('should transform a multiple class selector', () => {
-        expectCSS(`
-            .foo.bar{
-                color:red;
+        expectCSS('data-css-foo', `
+            .foo.bar {
+                color: red;
             }
         `, `
             .foo.bar[data-css-foo]{
@@ -60,9 +60,9 @@ describe('simple selectors', () => {
             }
         `);
 
-        expectCSS(`
-            .foo.bar.baz.qux{
-                color:red;
+        expectCSS('data-css-foo', `
+            .foo.bar.baz.qux {
+                color: red;
             }
         `, `
             .foo.bar.baz.qux[data-css-foo]{
@@ -72,9 +72,9 @@ describe('simple selectors', () => {
     });
 
     it('should transform selector groups', () => {
-        expectCSS(`
-            div, span, em{
-                color:red;
+        expectCSS('data-css-foo', `
+            div, span, em {
+                color: red;
             }
         `, `
             div[data-css-foo], span[data-css-foo], em[data-css-foo]{
@@ -82,9 +82,9 @@ describe('simple selectors', () => {
             }
         `);
 
-        expectCSS(`
-            div,span,em{
-                color:red;
+        expectCSS('data-css-foo', `
+            div,span,em {
+                color: red;
             }
         `, `
             div[data-css-foo],span[data-css-foo],em[data-css-foo]{
@@ -94,9 +94,9 @@ describe('simple selectors', () => {
     });
 
     it('should transform a mix of simple selectors', () => {
-        expectCSS(`
-            *, div#foo.bar.baz{
-                color:red;
+        expectCSS('data-css-foo', `
+            *, div#foo.bar.baz {
+                color: red;
             }
         `, `
             *[data-css-foo], div#foo.bar.baz[data-css-foo]{
