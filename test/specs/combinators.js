@@ -3,6 +3,16 @@ import expectCSS from '../setup';
 describe('combinators', () => {
     it('should transform a descendant combinator', () => {
         expectCSS(`
+            div span{
+                color:red;
+            }
+        `, `
+            div[data-css-foo] span[data-css-foo]{
+                color:red;
+            }
+        `);
+
+        expectCSS(`
             div span em{
                 color:red;
             }
@@ -15,11 +25,31 @@ describe('combinators', () => {
 
     it('should transform a child combinator', () => {
         expectCSS(`
-            div > span > em{
+            div > span{
                 color:red;
             }
         `, `
-            div[data-css-foo] > span[data-css-foo] > em[data-css-foo]{
+            div[data-css-foo] > span[data-css-foo]{
+                color:red;
+            }
+        `);
+
+        expectCSS(`
+            div>span{
+                color:red;
+            }
+        `, `
+            div[data-css-foo]>span[data-css-foo]{
+                color:red;
+            }
+        `);
+
+        expectCSS(`
+            div > span >em{
+                color:red;
+            }
+        `, `
+            div[data-css-foo] > span[data-css-foo] >em[data-css-foo]{
                 color:red;
             }
         `);
@@ -27,11 +57,31 @@ describe('combinators', () => {
 
     it('should transform an adjacent sibling combinator', () => {
         expectCSS(`
-            div + span + em{
+            div + span{
                 color:red;
             }
         `, `
-            div[data-css-foo] + span[data-css-foo] + em[data-css-foo]{
+            div[data-css-foo] + span[data-css-foo]{
+                color:red;
+            }
+        `);
+
+        expectCSS(`
+            div+span{
+                color:red;
+            }
+        `, `
+            div[data-css-foo]+span[data-css-foo]{
+                color:red;
+            }
+        `);
+
+        expectCSS(`
+            div + span+em{
+                color:red;
+            }
+        `, `
+            div[data-css-foo] + span[data-css-foo]+em[data-css-foo]{
                 color:red;
             }
         `);
@@ -39,11 +89,31 @@ describe('combinators', () => {
 
     it('should transform a general sibling combinator', () => {
         expectCSS(`
-            div ~ span ~ em{
+            div ~ span{
                 color:red;
             }
         `, `
-            div[data-css-foo] ~ span[data-css-foo] ~ em[data-css-foo]{
+            div[data-css-foo] ~ span[data-css-foo]{
+                color:red;
+            }
+        `);
+
+        expectCSS(`
+            div~span{
+                color:red;
+            }
+        `, `
+            div[data-css-foo]~span[data-css-foo]{
+                color:red;
+            }
+        `);
+
+        expectCSS(`
+            div ~ span~ em{
+                color:red;
+            }
+        `, `
+            div[data-css-foo] ~ span[data-css-foo]~ em[data-css-foo]{
                 color:red;
             }
         `);
@@ -101,7 +171,17 @@ describe('combinators', () => {
         `);
     });
 
-    it('should transform combinators with no whitespace', () => {
+    it('should transform a mix of combinators', () => {
+        expectCSS(`
+            div span > em + strong ~ i >>> p{
+                color:red;
+            }
+        `, `
+            div[data-css-foo] span[data-css-foo] > em[data-css-foo] + strong[data-css-foo] ~ i[data-css-foo] p{
+                color:red;
+            }
+        `);
+
         expectCSS(`
             div span>em+strong~i>>>p{
                 color:red;

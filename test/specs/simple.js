@@ -51,11 +51,21 @@ describe('simple', () => {
 
     it('should transform a multiple class selector', () => {
         expectCSS(`
-            .foo.bar.baz{
+            .foo.bar{
                 color:red;
             }
         `, `
-            .foo.bar.baz[data-css-foo]{
+            .foo.bar[data-css-foo]{
+                color:red;
+            }
+        `);
+
+        expectCSS(`
+            .foo.bar.baz.qux{
+                color:red;
+            }
+        `, `
+            .foo.bar.baz.qux[data-css-foo]{
                 color:red;
             }
         `);
@@ -71,15 +81,25 @@ describe('simple', () => {
                 color:red;
             }
         `);
-    });
 
-    it('should transform selector groups with no whitespace', () => {
         expectCSS(`
             div,span,em{
                 color:red;
             }
         `, `
             div[data-css-foo],span[data-css-foo],em[data-css-foo]{
+                color:red;
+            }
+        `);
+    });
+
+    it('should transform a mix of simple selectors', () => {
+        expectCSS(`
+            *, div#foo.bar.baz{
+                color:red;
+            }
+        `, `
+            *[data-css-foo], div#foo.bar.baz[data-css-foo]{
                 color:red;
             }
         `);
