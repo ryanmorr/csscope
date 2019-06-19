@@ -1,6 +1,6 @@
 import expectCSS from '../setup';
 
-describe('simple', () => {
+describe('simple selectors', () => {
     it('should transform the universal selector', () => {
         expectCSS(`
             *{
