@@ -128,11 +128,22 @@ function injectAttributeSelector(selector, attributeName) {
 export default function csscope(attr, css) {
     css = cleanCSS(css);
     let styles = '';
+    let isKeyframe = false;
+    let depth = 0;
     cssRe.lastIndex = 0;
     for (let m; (m = cssRe.exec(css)) != null;) {
         if (m[2] == '{') {
+            if (isKeyframe) {
+                depth++;
+            }
             let rule = m[1];
             if (rule.charAt(0) === '@') {
+                if (rule.substring(0, 10) === '@keyframes') {
+                    isKeyframe = true;
+                    depth++;
+                }
+                styles += rule;
+            } else if (isKeyframe) {
                 styles += rule;
             } else {
                 styles += injectAttributeSelector(rule.trim(), attr);
@@ -140,6 +151,12 @@ export default function csscope(attr, css) {
             styles += '{\n';
         } else if (m[2] == '}') {
             styles += '}\n';
+            if (isKeyframe) {
+                depth--;
+                if (depth === 0) {
+                    isKeyframe = false;
+                }
+            }
         } else if (m[2] == ';') {
             styles += m[1] + ';\n';
         }
