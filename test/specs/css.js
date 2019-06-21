@@ -14,7 +14,7 @@ describe('css', () => {
 
         expectCSS('data-css-foo', `
             div  {
-                color:   red;
+                color :   red;
             }
         `, `
             div[data-css-foo]{
@@ -69,6 +69,30 @@ describe('css', () => {
                 color:red;
             }
             span[data-css-foo]{
+                color:blue;
+            }
+            em[data-css-foo]{
+                color:green;
+            }
+        `);
+
+        expectCSS('data-css-foo', `
+            div,
+            span {
+                color: red;
+            }
+
+            p { color: blue; }
+
+            em
+            {
+                color : green;
+            }
+        `, `
+            div[data-css-foo], span[data-css-foo]{
+                color:red;
+            }
+            p[data-css-foo]{
                 color:blue;
             }
             em[data-css-foo]{
