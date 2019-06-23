@@ -38,6 +38,11 @@ function injectAttributeSelector(selector, attributeName) {
         incrementIndex(attribute.length);
     }
 
+    function peek(start, size) {
+        start = index + start;
+        return selector.substring(start, start + size);
+    }
+
     function skipPattern(re) {
         const name = selector.substring(index).match(re)[0];
         incrementIndex(name.length);
@@ -70,7 +75,7 @@ function injectAttributeSelector(selector, attributeName) {
                     insertAttributeAt(index);
                 }
             }
-            if (selector.substring(index, index + 3) === '>>>') {
+            if (peek(0, 3) === '>>>') {
                 selector = selector.slice(0, (hasWhitespace ? index - 1 : index)) + (hasWhitespace ? '' : ' ') + selector.slice(index + 3);
                 hasDeepCombinator = true;
             } else {
@@ -79,14 +84,8 @@ function injectAttributeSelector(selector, attributeName) {
             hasInsertedAttribute = hasWhitespace = false;
             skipWhitespace();
         } else if (char === ',') {
-            if (selector.charAt(index - 1) === ' ') {
-                if (shouldInsertAttribute()) {
-                    insertAttributeAt(index - 1);
-                }
-            } else {
-                if (shouldInsertAttribute()) {
-                    insertAttributeAt(index);
-                }
+            if (shouldInsertAttribute()) {
+                insertAttributeAt(isWhitespace(peek(-1, 1)) ? index - 1 : index);
             }
             hasInsertedAttribute = hasDeepCombinator = hasWhitespace = false;
             skipWhitespace();
@@ -116,7 +115,7 @@ function injectAttributeSelector(selector, attributeName) {
                     insertAttributeAt(index);
                     hasInsertedAttribute = true;
                 }
-                if(selector.charAt(1) === ':'){
+                if (peek(0, 2) === '::') {
                     incrementIndex(2);
                     skipPattern(nameRe);
                 } else {
