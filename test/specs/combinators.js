@@ -171,6 +171,18 @@ describe('combinators', () => {
         `);
     });
 
+    it('should transform a leading deep combinator', () => {
+        expectCSS('data-css-foo', `
+            >>> div {
+                color: red;
+            }
+        `, `
+            [data-css-foo] div{
+                color:red;
+            }
+        `);
+    });
+
     it('should transform a mix of combinators', () => {
         expectCSS('data-css-foo', `
             div span > em + strong ~ i >>> p {
