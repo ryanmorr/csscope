@@ -127,24 +127,44 @@ function injectAttributeSelector(selector, attributeName) {
     return selector;
 }
 
+function prefixKeyframes(css, prefix, keyframes) {
+    return css.replace(keyframeNameRe, (all, name) => {
+        keyframes.push(name);
+        return '@keyframes ' + prefix + '-' + name;
+    });
+}
+
+function prefixAnimationName(declaration, prefix, keyframes) {
+    const parts = declaration.match(animationDeclarationRe);
+    const prop = parts[1];
+    const animation = parts[2];
+    const animations = animation.split(',');
+    for (let i = 0, len = animations.length; i < len; i++) {
+        const animationParts = animations[i].trim().split(' ');
+        const animationName = animationParts[0];
+        if (keyframes.includes(animationName)) {
+            animationParts[0] = prefix + '-' + animationName;
+        }
+        animations[i] = animationParts.join(' ');
+    }
+    return prop + ':' + animations.join(',');
+}
+
 export default function csscope(id, css) {
     const keyframes = [];
-    css = cleanCSS(css).replace(keyframeNameRe, (all, name) => {
-        keyframes.push(name);
-        return '@keyframes ' + id + '-' + name;
-    });
+    css = prefixKeyframes(cleanCSS(css), id, keyframes);
     let styles = '';
     let isKeyframe = false;
     let depth = 0;
     cssRe.lastIndex = 0;
     for (let m; (m = cssRe.exec(css)) != null;) {
         if (m[2] == '{') {
+            let rule = m[1];
             if (isKeyframe) {
                 depth++;
             }
-            let rule = m[1];
             if (rule.charAt(0) === '@') {
-                if (rule.substring(0, 10) === '@keyframes') {
+                if (rule.startsWith('@keyframes')) {
                     isKeyframe = true;
                     depth++;
                 }
@@ -165,20 +185,8 @@ export default function csscope(id, css) {
             }
         } else if (m[2] == ';') {
             const declaration = m[1];
-            if (declaration.substring(0, 9) === 'animation' && keyframes.length > 0) {
-                const parts = declaration.match(animationDeclarationRe);
-                const prop = parts[1];
-                const animation = parts[2];
-                const animations = animation.split(',');
-                for (let i = 0, len = animations.length; i < len; i++) {
-                    const animationParts = animations[i].trim().split(' ');
-                    const animationName = animationParts[0];
-                    if (keyframes.includes(animationName)) {
-                        animationParts[0] = id + '-' + animationName;
-                    }
-                    animations[i] = animationParts.join(' ');
-                }
-                styles += prop + ':' + animations.join(',') + ';\n';
+            if (declaration.startsWith('animation') && keyframes.length > 0) {
+                styles += prefixAnimationName(declaration, id, keyframes) + ';\n';
             } else {
                 styles += declaration + ';\n';
             }
