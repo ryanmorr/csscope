@@ -10,6 +10,8 @@ const cssRe = /([^{};]*)([;{}])/g;
 const nameRe = /^(?:\\.|[\w\-\u00c0-\uFFFF])+/;
 const pseudoRe = /:((?:[\w\u00c0-\uFFFF-]|\\.)+)(?:\((['"]?)((?:\([^)]+\)|[^()]*)+)\2\))?/;
 const atttributeRe = /^\[((?:\\.|[\w\u00c0-\uFFFF-])+)\s*(?:(\S?=)\s*(?:(['"])([^]*?)\3|(#?(?:\\.|[\w\u00c0-\uFFFF-])*)|)|)\s*(i)?\]/;
+const keyframeNameRe = /@keyframes\s*((?:\\.|[\w\-\u00c0-\uFFFF])+)/ig;
+const animationDeclarationRe = /^(animation(?:-name)?)\s*:\s*(.*)$/;
 
 function cleanCSS(css) {
     return css
@@ -125,8 +127,12 @@ function injectAttributeSelector(selector, attributeName) {
     return selector;
 }
 
-export default function csscope(attr, css) {
-    css = cleanCSS(css);
+export default function csscope(id, css) {
+    const keyframes = [];
+    css = cleanCSS(css).replace(keyframeNameRe, (all, name) => {
+        keyframes.push(name);
+        return '@keyframes ' + id + '-' + name;
+    });
     let styles = '';
     let isKeyframe = false;
     let depth = 0;
@@ -146,7 +152,7 @@ export default function csscope(attr, css) {
             } else if (isKeyframe) {
                 styles += rule;
             } else {
-                styles += injectAttributeSelector(rule.trim(), attr);
+                styles += injectAttributeSelector(rule.trim(), id);
             }
             styles += '{\n';
         } else if (m[2] == '}') {
@@ -158,7 +164,24 @@ export default function csscope(attr, css) {
                 }
             }
         } else if (m[2] == ';') {
-            styles += m[1] + ';\n';
+            const declaration = m[1];
+            if (declaration.substring(0, 9) === 'animation' && keyframes.length > 0) {
+                const parts = declaration.match(animationDeclarationRe);
+                const prop = parts[1];
+                const animation = parts[2];
+                const animations = animation.split(',');
+                for (let i = 0, len = animations.length; i < len; i++) {
+                    const animationParts = animations[i].trim().split(' ');
+                    const animationName = animationParts[0];
+                    if (keyframes.includes(animationName)) {
+                        animationParts[0] = id + '-' + animationName;
+                    }
+                    animations[i] = animationParts.join(' ');
+                }
+                styles += prop + ':' + animations.join(',') + ';\n';
+            } else {
+                styles += declaration + ';\n';
+            }
         }
     }
     return styles;
