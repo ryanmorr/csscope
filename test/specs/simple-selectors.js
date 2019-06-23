@@ -91,6 +91,16 @@ describe('simple selectors', () => {
                 color:red;
             }
         `);
+
+        expectCSS('data-css-foo', `
+            div, span ,     em {
+                color: red;
+            }
+        `, `
+            div[data-css-foo], span[data-css-foo] , em[data-css-foo]{
+                color:red;
+            }
+        `);
     });
 
     it('should transform a mix of simple selectors', () => {

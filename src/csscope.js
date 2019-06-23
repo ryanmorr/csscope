@@ -79,8 +79,14 @@ function injectAttributeSelector(selector, attributeName) {
             hasInsertedAttribute = hasWhitespace = false;
             skipWhitespace();
         } else if (char === ',') {
-            if (shouldInsertAttribute()) {
-                insertAttributeAt(index);
+            if (selector.charAt(index - 1) === ' ') {
+                if (shouldInsertAttribute()) {
+                    insertAttributeAt(index - 1);
+                }
+            } else {
+                if (shouldInsertAttribute()) {
+                    insertAttributeAt(index);
+                }
             }
             hasInsertedAttribute = hasDeepCombinator = hasWhitespace = false;
             skipWhitespace();
