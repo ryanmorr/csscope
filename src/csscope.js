@@ -8,7 +8,7 @@ const trailingSeparatorsRe = /([^:;{}])}/g;
 
 const cssRe = /([^{};]*)([;{}])/g;
 const nameRe = /^(?:\\.|[\w\-\u00c0-\uFFFF])+/;
-const pseudoRe = /:((?:[\w\u00c0-\uFFFF-]|\\.)+)(?:\((['"]?)((?:\([^)]+\)|[^()]*)+)\2\))?/;
+const pseudoRe = /^:((?:[\w\u00c0-\uFFFF-]|\\.)+)(?:\((['"]?)((?:\([^)]+\)|[^()]*)+)\2\))?/;
 const atttributeRe = /^\[((?:\\.|[\w\u00c0-\uFFFF-])+)\s*(?:(\S?=)\s*(?:(['"])([^]*?)\3|(#?(?:\\.|[\w\u00c0-\uFFFF-])*)|)|)\s*(i)?\]/;
 const keyframeNameRe = /@keyframes\s*((?:\\.|[\w\-\u00c0-\uFFFF])+)/ig;
 const animationDeclarationRe = /^(animation(?:-name)?)\s*:\s*(.*)$/;
