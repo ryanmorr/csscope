@@ -8,7 +8,7 @@ const trailingSeparatorsRe = /([^:;{}])}/g;
 
 const cssRe = /([^{};]*)([;{}])/g;
 const nameRe = /^(?:\\.|[\w\-\u00c0-\uFFFF])+/;
-const pseudoRe = /^:((?:[\w\u00c0-\uFFFF-]|\\.)+)(?:\((['"]?)((?:\([^)]+\)|[^()]*)+)\2\))?/;
+const pseudoRe = /^:((?:\\.|[\w\u00c0-\uFFFF-])+)(?:\((['"]?)((?:\([^)]+\)|[^()]*)+)\2\))?/;
 const atttributeRe = /^\[((?:\\.|[\w\u00c0-\uFFFF-])+)\s*(?:(\S?=)\s*(?:(['"])([^]*?)\3|(#?(?:\\.|[\w\u00c0-\uFFFF-])*)|)|)\s*(i)?\]/;
 const keyframeNameRe = /@keyframes\s*((?:\\.|[\w\-\u00c0-\uFFFF])+)/ig;
 const animationDeclarationRe = /^(animation(?:-name)?)\s*:\s*(.*)$/;
@@ -69,11 +69,7 @@ function injectAttributeSelector(selector, attributeName) {
             skipWhitespace();
         } else if (char === '>' || char === '~' || char === '+') {
             if (shouldInsertAttribute()) {
-                if (hasWhitespace) {
-                    insertAttributeAt(index - 1);
-                } else {
-                    insertAttributeAt(index);
-                }
+                insertAttributeAt(hasWhitespace ? index - 1 : index);
             }
             if (peek(0, 3) === '>>>') {
                 selector = selector.slice(0, (hasWhitespace ? index - 1 : index)) + (hasWhitespace ? '' : ' ') + selector.slice(index + 3);
@@ -98,10 +94,7 @@ function injectAttributeSelector(selector, attributeName) {
             }
             if (char === '*') {
                 incrementIndex(1);
-            } else if (char === '#') {
-                incrementIndex(1);
-                skipPattern(nameRe);
-            } else if (char === '.') {
+            } else if (char === '#' || char === '.') {
                 incrementIndex(1);
                 skipPattern(nameRe);
             } else if (char === '[') {
