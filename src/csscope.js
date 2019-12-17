@@ -1,28 +1,28 @@
-const newLinesRe = /(\r\n|\r|\n)+/g;
-const tabRe = /\t/g;
-const extraSpacesRe = /\s{2,}/g;
-const commentsRe = /\/\*[\W\w]*?\*\//g;
-const trailingSeparatorSpacesRe = /\s*([:;{}])\s*/g;
-const unnecessarySeparatorsRe = /\};+/g;
-const trailingSeparatorsRe = /([^:;{}])}/g;
+const NEW_LINES_RE = /(\r\n|\r|\n)+/g;
+const TAB_RE = /\t/g;
+const EXTRA_SPACES_RE = /\s{2,}/g;
+const COMMENTS_RE = /\/\*[\W\w]*?\*\//g;
+const TRAILING_SEPARATOR_SPACES_RE = /\s*([:;{}])\s*/g;
+const UNNECESSARY_SEPARATOR_RE = /\};+/g;
+const TRAILING_SEPARATOR_RE = /([^:;{}])}/g;
 
-const cssRe = /([^{};]*)([;{}])/g;
-const nameRe = /^(?:\\.|[\w\-\u00c0-\uFFFF])+/;
-const pseudoRe = /^:((?:\\.|[\w\u00c0-\uFFFF-])+)(?:\((['"]?)((?:\([^)]+\)|[^()]*)+)\2\))?/;
-const atttributeRe = /^\[((?:\\.|[\w\u00c0-\uFFFF-])+)\s*(?:(\S?=)\s*(?:(['"])([^]*?)\3|(#?(?:\\.|[\w\u00c0-\uFFFF-])*)|)|)\s*(i)?\]/;
-const keyframeNameRe = /@keyframes\s*((?:\\.|[\w\-\u00c0-\uFFFF])+)/ig;
-const animationDeclarationRe = /^(animation(?:-name)?)\s*:\s*(.*)$/;
+const CSS_RE = /([^{};]*)([;{}])/g;
+const NAME_RE = /^(?:\\.|[\w\-\u00c0-\uFFFF])+/;
+const PSEUDO_RE = /^:((?:\\.|[\w\u00c0-\uFFFF-])+)(?:\((['"]?)((?:\([^)]+\)|[^()]*)+)\2\))?/;
+const ATTRIBUTE_RE = /^\[((?:\\.|[\w\u00c0-\uFFFF-])+)\s*(?:(\S?=)\s*(?:(['"])([^]*?)\3|(#?(?:\\.|[\w\u00c0-\uFFFF-])*)|)|)\s*(i)?\]/;
+const KEYFRAME_NAME_RE = /@keyframes\s*((?:\\.|[\w\-\u00c0-\uFFFF])+)/ig;
+const ANIMATION_DECLARATION_RE = /^(animation(?:-name)?)\s*:\s*(.*)$/;
 
 function cleanCSS(css) {
     return css
-        .replace(newLinesRe, ' ')
-        .replace(tabRe, ' ')
-        .replace(extraSpacesRe, ' ')
-        .replace(commentsRe, '')
+        .replace(NEW_LINES_RE, ' ')
+        .replace(TAB_RE, ' ')
+        .replace(EXTRA_SPACES_RE, ' ')
+        .replace(COMMENTS_RE, '')
         .trim()
-        .replace(trailingSeparatorSpacesRe, '$1')
-        .replace(unnecessarySeparatorsRe, '}')
-        .replace(trailingSeparatorsRe, '$1;}');
+        .replace(TRAILING_SEPARATOR_SPACES_RE, '$1')
+        .replace(UNNECESSARY_SEPARATOR_RE, '}')
+        .replace(TRAILING_SEPARATOR_RE, '$1;}');
 }
 
 function injectAttributeSelector(selector, attributeName) {
@@ -96,13 +96,13 @@ function injectAttributeSelector(selector, attributeName) {
                 incrementIndex(1);
             } else if (char === '#' || char === '.') {
                 incrementIndex(1);
-                skipPattern(nameRe);
+                skipPattern(NAME_RE);
             } else if (char === '[') {
                 if (shouldInsertAttribute()) {
                     insertAttributeAt(index);
                     hasInsertedAttribute = true;
                 }
-                skipPattern(atttributeRe);
+                skipPattern(ATTRIBUTE_RE);
             } else if (char === ':') {
                 if (shouldInsertAttribute()) {
                     insertAttributeAt(index);
@@ -110,12 +110,12 @@ function injectAttributeSelector(selector, attributeName) {
                 }
                 if (peek(0, 2) === '::') {
                     incrementIndex(2);
-                    skipPattern(nameRe);
+                    skipPattern(NAME_RE);
                 } else {
-                    skipPattern(pseudoRe);
+                    skipPattern(PSEUDO_RE);
                 }
-            } else if (nameRe.test(selector.substring(index))) {
-                skipPattern(nameRe);
+            } else if (NAME_RE.test(selector.substring(index))) {
+                skipPattern(NAME_RE);
             }
         }
     }
@@ -126,14 +126,14 @@ function injectAttributeSelector(selector, attributeName) {
 }
 
 function prefixKeyframes(css, prefix, keyframes) {
-    return css.replace(keyframeNameRe, (all, name) => {
+    return css.replace(KEYFRAME_NAME_RE, (all, name) => {
         keyframes.push(name);
         return '@keyframes ' + prefix + '-' + name;
     });
 }
 
 function prefixAnimationName(declaration, prefix, keyframes) {
-    const parts = declaration.match(animationDeclarationRe);
+    const parts = declaration.match(ANIMATION_DECLARATION_RE);
     const prop = parts[1];
     const animation = parts[2];
     const animations = animation.split(',');
@@ -154,8 +154,8 @@ export default function csscope(id, css) {
     let styles = '';
     let isKeyframe = false;
     let depth = 0;
-    cssRe.lastIndex = 0;
-    for (let m; (m = cssRe.exec(css)) != null;) {
+    CSS_RE.lastIndex = 0;
+    for (let m; (m = CSS_RE.exec(css)) != null;) {
         if (m[2] == '{') {
             let rule = m[1];
             if (isKeyframe) {
