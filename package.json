@@ -1,5 +1,5 @@
 {
-  "name": "csscope",
+  "name": "@ryanmorr/csscope",
   "description": "A simple and lightweight scoped CSS solution",
   "version": "0.1.0",
   "license": "Unlicense",
