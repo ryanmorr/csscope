@@ -35,6 +35,16 @@ describe('pseudos', () => {
                 color:red;
             }
         `);
+
+        expectCSS('data-css-foo', `
+            :contains('foo') {
+                color: red;
+            }
+        `, `
+            [data-css-foo]:contains('foo'){
+                color:red;
+            }
+        `);
     });
 
     it('should transform a pseudo-class selector with an embedded selector string', () => {
