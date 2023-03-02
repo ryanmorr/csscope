@@ -1,4 +1,4 @@
-import expectCSS from '../setup';
+import expectCSS from '../setup.js';
 
 describe('attributes', () => {
     it('should transform [attr] attribute selector', () => {

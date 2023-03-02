@@ -1,4 +1,4 @@
-import expectCSS from '../setup';
+import expectCSS from '../setup.js';
 
 describe('combinators', () => {
     it('should transform a descendant combinator', () => {

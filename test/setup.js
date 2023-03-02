@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import csscope from '../src/csscope';
+import csscope from '../src/csscope.js';
 
 function normalizeWhitespace(str) {
     return str.trim()

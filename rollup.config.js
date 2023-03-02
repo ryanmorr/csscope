@@ -1,8 +1,7 @@
-import pkg from './package.json';
-import babel from 'rollup-plugin-babel';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import minify from 'rollup-plugin-babel-minify';
+import pkg from './package.json' assert { type: "json" };
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import terser from '@rollup/plugin-terser';
 
 const banner = `/*! ${pkg.name} v${pkg.version} | ${pkg.homepage} */`;
 
@@ -13,28 +12,22 @@ export default {
             banner,
             name: 'csscope',
             file: pkg.browser,
-            format: 'umd',
-            sourcemap: 'inline'
+            format: 'umd'
         },
         {
             banner,
             file: pkg.main,
-            format: 'cjs',
-            sourcemap: 'inline'
+            format: 'cjs'
         },
         {
             banner,
             file: pkg.module,
-            format: 'esm',
-            sourcemap: 'inline'
+            format: 'esm'
         }
     ],
     plugins: [
         resolve(),
-        babel({
-            exclude: 'node_modules/**'
-        }),
         commonjs(),
-        minify()
+        terser()
     ]
 };

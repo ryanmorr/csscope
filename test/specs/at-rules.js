@@ -1,4 +1,4 @@
-import expectCSS from '../setup';
+import expectCSS from '../setup.js';
 
 describe('at-rules', () => {
     it('should transform a media query at-rule with no conditions', () => {

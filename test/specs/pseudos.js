@@ -1,4 +1,4 @@
-import expectCSS from '../setup';
+import expectCSS from '../setup.js';
 
 describe('pseudos', () => {
     it('should transform a pseudo-class selector', () => {

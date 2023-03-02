@@ -1,4 +1,4 @@
-import expectCSS from '../setup';
+import expectCSS from '../setup.js';
 
 describe('simple', () => {
     it('should transform the universal selector', () => {
