@@ -1,29 +1,10 @@
-const NEW_LINES_RE = /(\r\n|\r|\n)+/g;
-const TAB_RE = /\t/g;
-const EXTRA_SPACES_RE = /\s{2,}/g;
-const COMMENTS_RE = /\/\*[\W\w]*?\*\//g;
-const TRAILING_SEPARATOR_SPACES_RE = /\s*([:;{}])\s*/g;
-const UNNECESSARY_SEPARATOR_RE = /\};+/g;
-const TRAILING_SEPARATOR_RE = /([^:;{}])}/g;
+import { walk } from '@ryanmorr/amble';
 
-const CSS_RE = /([^{};]*)([;{}])/g;
 const NAME_RE = /^(?:\\.|[\w\-\u00c0-\uFFFF])+/;
 const PSEUDO_RE = /^:((?:\\.|[\w\u00c0-\uFFFF-])+)(?:\((['"]?)((?:\([^)]+\)|[^()]*)+)\2\))?/;
 const ATTRIBUTE_RE = /^\[((?:\\.|[\w\u00c0-\uFFFF-])+)\s*(?:(\S?=)\s*(?:(['"])([^]*?)\3|(#?(?:\\.|[\w\u00c0-\uFFFF-])*)|)|)\s*(i)?\]/;
 const KEYFRAME_NAME_RE = /@keyframes\s*((?:\\.|[\w\-\u00c0-\uFFFF])+)/ig;
 const ANIMATION_DECLARATION_RE = /^(animation(?:-name)?)\s*:\s*(.*)$/;
-
-function cleanCSS(css) {
-    return css
-        .replace(NEW_LINES_RE, ' ')
-        .replace(TAB_RE, ' ')
-        .replace(EXTRA_SPACES_RE, ' ')
-        .replace(COMMENTS_RE, '')
-        .trim()
-        .replace(TRAILING_SEPARATOR_SPACES_RE, '$1')
-        .replace(UNNECESSARY_SEPARATOR_RE, '}')
-        .replace(TRAILING_SEPARATOR_RE, '$1;}');
-}
 
 function injectAttributeSelector(selector, attributeName) {
     const attribute = '[' + attributeName + ']';
@@ -150,30 +131,28 @@ function prefixAnimationName(declaration, prefix, keyframes) {
 
 export default function csscope(id, css) {
     const keyframes = [];
-    css = prefixKeyframes(cleanCSS(css), id, keyframes);
+    css = prefixKeyframes(css, id, keyframes);
     let styles = '';
     let isKeyframe = false;
     let depth = 0;
-    CSS_RE.lastIndex = 0;
-    for (let m; (m = CSS_RE.exec(css)) != null;) {
-        if (m[2] == '{') {
-            let rule = m[1];
+    walk(css, (style, char) => {
+        if (char == '{') {
             if (isKeyframe) {
                 depth++;
             }
-            if (rule.charAt(0) === '@') {
-                if (rule.startsWith('@keyframes')) {
+            if (style.charAt(0) === '@') {
+                if (style.startsWith('@keyframes')) {
                     isKeyframe = true;
                     depth++;
                 }
-                styles += rule;
+                styles += style;
             } else if (isKeyframe) {
-                styles += rule;
+                styles += style;
             } else {
-                styles += injectAttributeSelector(rule.trim(), id);
+                styles += injectAttributeSelector(style.trim(), id);
             }
             styles += '{\n';
-        } else if (m[2] == '}') {
+        } else if (char == '}') {
             styles += '}\n';
             if (isKeyframe) {
                 depth--;
@@ -181,14 +160,13 @@ export default function csscope(id, css) {
                     isKeyframe = false;
                 }
             }
-        } else if (m[2] == ';') {
-            const declaration = m[1];
-            if (declaration.startsWith('animation') && keyframes.length > 0) {
-                styles += prefixAnimationName(declaration, id, keyframes) + ';\n';
+        } else if (char == ';') {
+            if (style.startsWith('animation') && keyframes.length > 0) {
+                styles += prefixAnimationName(style, id, keyframes) + ';\n';
             } else {
-                styles += declaration + ';\n';
+                styles += style + ';\n';
             }
         }
-    }
+    });
     return styles;
 }

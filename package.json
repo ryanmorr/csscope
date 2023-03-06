@@ -29,5 +29,8 @@
     "rollup": "^3.14.0",
     "sinon": "^15.0.1",
     "terser": "^5.16.3"
+  },
+  "dependencies": {
+    "@ryanmorr/amble": "^0.1.2"
   }
 }
