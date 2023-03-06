@@ -8,7 +8,7 @@
 
 ## Install
 
-Download the [CJS](https://github.com/ryanmorr/csscope/raw/master/dist/csscope.cjs.js), [ESM](https://github.com/ryanmorr/csscope/raw/master/dist/csscope.esm.js), [UMD](https://github.com/ryanmorr/csscope/raw/master/dist/csscope.umd.js) versions or install via NPM:
+Download the [CJS](https://github.com/ryanmorr/csscope/raw/master/dist/cjs/csscope.js), [ESM](https://github.com/ryanmorr/csscope/raw/master/dist/esm/csscope.js), [UMD](https://github.com/ryanmorr/csscope/raw/master/dist/umd/csscope.js) versions or install via NPM:
 
 ``` sh
 npm install @ryanmorr/csscope
@@ -18,7 +18,7 @@ npm install @ryanmorr/csscope
 
 Provide a unique ID and CSS as a string and get a transformed CSS string with the unique ID inserted as an attribute selector for each CSS selector sequence. It supports media queries, including prefixing keyframe and animation names, and deep combinators (`>>>`) to add styles targeting child components. For example:
 
-``` javascript
+```javascript
 import csscope from '@ryanmorr/csscope';
 
 const css = csscope('foo', `
@@ -54,10 +54,9 @@ const css = csscope('foo', `
 `);
 ```
 
-Generates the following CSS string:
+Generates the following CSS as a string:
 
-``` javascript
-`
+```css
 .foo[foo] {
     animation: foo-grow 3s linear 1s infinite running;
 }
@@ -85,7 +84,6 @@ Generates the following CSS string:
         width: 100%;
     }
 }
-`
 ```
 
 Use the transformed CSS string to create a stylesheet client-side or server-side. To apply those styles to a DOM tree (component), add the unique ID as an attribute to every element in a DOM tree that should be influenced by the scoped styles.
@@ -97,8 +95,8 @@ Use the transformed CSS string to create a stylesheet client-side or server-side
 This project is dedicated to the public domain as described by the [Unlicense](http://unlicense.org/).
 
 [project-url]: https://github.com/ryanmorr/csscope
-[version-image]: https://badge.fury.io/gh/ryanmorr%2Fcsscope.svg
-[build-url]: https://travis-ci.org/ryanmorr/csscope
-[build-image]: https://travis-ci.org/ryanmorr/csscope.svg
-[license-image]: https://img.shields.io/badge/license-Unlicense-blue.svg
+[version-image]: https://img.shields.io/github/package-json/v/ryanmorr/csscope?color=blue&style=flat-square
+[build-url]: https://github.com/ryanmorr/csscope/actions
+[build-image]: https://img.shields.io/github/actions/workflow/status/ryanmorr/csscope/node.js.yml?style=flat-square
+[license-image]: https://img.shields.io/github/license/ryanmorr/csscope?color=blue&style=flat-square
 [license-url]: UNLICENSE
