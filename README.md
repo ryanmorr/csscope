@@ -1,8 +1,8 @@
 # csscope
 
 [![Version Badge][version-image]][project-url]
-[![Build Status][build-image]][build-url]
 [![License][license-image]][license-url]
+[![Build Status][build-image]][build-url]
 
 > A simple and lightweight scoped CSS solution
 
