@@ -7,13 +7,25 @@
   "homepage": "https://github.com/ryanmorr/csscope",
   "repository": "github:ryanmorr/csscope",
   "bugs": "https://github.com/ryanmorr/csscope/issues",
-  "publishConfig": {
-    "access": "public"
-  },
+  "keywords": [
+    "javascript",
+    "css",
+    "scoped-css"
+  ],
   "type": "module",
-  "main": "dist/csscope.cjs.js",
-  "module": "dist/csscope.esm.js",
-  "browser": "dist/csscope.umd.js",
+  "main": "dist/cjs/csscope.js",
+  "module": "dist/esm/csscope.js",
+  "browser": "dist/umd/csscope.js",
+  "exports": {
+    ".": {
+      "browser": "./dist/umd/csscope.js",
+      "import": "./dist/esm/csscope.js",
+      "require": "./dist/cjs/csscope.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "lint": "eslint src/** test/specs/**",
     "test": "mocha test/specs/**/*.js --reporter spec",
@@ -27,6 +39,7 @@
     "eslint": "^8.33.0",
     "mocha": "^10.2.0",
     "rollup": "^3.14.0",
+    "rollup-plugin-generate-package-json": "^3.2.0",
     "sinon": "^15.0.1",
     "terser": "^5.16.3"
   },
