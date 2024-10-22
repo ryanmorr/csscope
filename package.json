@@ -1,7 +1,7 @@
 {
   "name": "@ryanmorr/csscope",
   "description": "A simple and lightweight scoped CSS solution",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "Unlicense",
   "author": "Ryan Morr",
   "homepage": "https://github.com/ryanmorr/csscope",
