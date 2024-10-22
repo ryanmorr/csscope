@@ -5,8 +5,11 @@
   "license": "Unlicense",
   "author": "Ryan Morr",
   "homepage": "https://github.com/ryanmorr/csscope",
-  "repository": "github:ryanmorr/csscope",
   "bugs": "https://github.com/ryanmorr/csscope/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryanmorr/csscope.git"
+  },
   "keywords": [
     "javascript",
     "css",
